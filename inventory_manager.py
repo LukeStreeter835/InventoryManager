@@ -7,9 +7,6 @@ Course: CPS 310
 #File name for where inventory will be perserved
 INVENTORY_FILE = "inventory.txt"
 
-def load_inventory():
-    """Will load inventory items from inventory.txt"""
-    return
 
 def view_inventory(inventory):
     for x in inventory:
@@ -19,6 +16,7 @@ def view_inventory(inventory):
 def add_item(name, category, qty, inventory):
     """Will add a new item into the list of dictionaries"""
 
+    #add new key values to dictionary
     tempDictionary = {
         "Name": name,
         "Category": category,
@@ -28,6 +26,33 @@ def add_item(name, category, qty, inventory):
 
     print("Item succsesfully added to inventory")
     print()
+
+def load_inventory(filename):
+    """Will load inventory items from inventory.txt"""
+    inventory = []
+
+    try:
+        with open(filename, "r") as file:
+            for line in file:
+                #file format per line is: "name | category | quantity"
+                #split the line into three seperate parts 
+                name, category, qty = line.split("|", 2)
+
+                #strip values of spaces
+                name = name.strip()
+                category = category.strip()
+                qty = qty.strip()
+
+                #if one of the key's values are empty, then dont add it into list
+                if(name != "" and category != "" and qty != ""):
+                    inventory.append({"Name": name, "Category": category, "Quantity": qty})
+
+    #return nothing if the program could not find the file
+    except FileNotFoundError:
+        return []
+
+    #return new inventory value
+    return inventory
 
 def display_menu():
     """Display menu selection"""
@@ -40,8 +65,7 @@ def display_menu():
     print("7. Exit")
 
 def main():
-    inventory = []
-    inventory.append(load_inventory())
+    inventory = load_inventory(INVENTORY_FILE)
 
     while True:
         display_menu()
