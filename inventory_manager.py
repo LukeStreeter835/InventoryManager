@@ -114,6 +114,38 @@ def remove_item(inventory):
 
     print("============================")
 
+def search_inventory(inventory):
+    #get user input
+    finditem = input("Enter item name you wish to search for: \n")
+    print("============================")
+    partialitem = []
+    itemindex = -1
+
+    
+    for i in range(len(inventory)):
+        #See if there are partial matches
+        if(finditem.lower() in inventory[i]["Name"].lower()):
+            #add to a list of items 
+            partialitem.append(inventory[i])
+            #see if there is a 1-1 match
+            if inventory[i]["Name"].lower() == finditem.lower():
+                #hold onto index
+                itemindex = i
+
+    #if 1-1 match, then show user exact list location and details
+    if itemindex != -1:
+        print(f"Found item at position #{itemindex + 1}: {inventory[itemindex]}")
+    #else if there were close matches, show user close matches
+    elif len(partialitem) != 0:
+        print(f"Could not find {finditem} exactly, here are some similar matches: ")
+        for x in partialitem:
+            print(x)
+    else:
+        print("No matches were found, sorry!")
+
+    print("============================")
+
+
 def display_menu():
     """Display menu selection"""
     print("1. View Inventory")
@@ -142,6 +174,8 @@ def main():
         elif choice == "4":
             remove_item(inventory)
             save_inventory(inventory, INVENTORY_FILE)
+        elif choice == "5":
+            search_inventory(inventory)
         elif choice == "7":
             break
         else:
