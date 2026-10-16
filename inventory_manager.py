@@ -9,9 +9,12 @@ INVENTORY_FILE = "inventory.txt"
 
 
 def view_inventory(inventory):
+    i = 1
     for x in inventory:
-        print(x)
-        print("============================")
+        print(f"{i}. {x}")
+        i+=1
+
+    print("============================")
 
 def add_item(name, category, qty, inventory):
     """Will add a new item into the list of dictionaries"""
@@ -70,6 +73,47 @@ def save_inventory(inventory, filename):
             #Then write the name, cat, and qty formatted properly into the file
             file.write(f"{name} | {category} | {quantity}\n")
 
+def update_quantity(inventory):
+    #display inventory so user can see selection
+    view_inventory(inventory)
+
+    #take user input to select the right dictionary
+    choice = int(input("What inventory item do you want? (please select using number)\n"))
+    print("============================")
+
+    #display dictionary so veiwer can verify its correct 
+    print(inventory[choice - 1])
+    print("============================")
+
+    #ask user to change qty
+    qtychange = input("What would you like the new qunatity to be?\n")
+
+    #change qty
+    inventory[choice - 1]["Quantity"] = qtychange
+
+def remove_item(inventory):
+    #display list so user can see selection
+    view_inventory(inventory)
+
+    #take user input to get dictionary
+    choice = int(input("Which item would you like to remove? (please select using number)\n"))
+    print("============================")
+
+    #display dictionary so user can verify its correct 
+    shouldremove = input(f"Would you like {inventory[choice - 1]} removed? (y/n)\n")
+    print("============================")
+
+    #Validate input
+    if shouldremove == "y":
+        removeditem = inventory.pop(choice - 1)
+        print(f"Successfully removed {removeditem}")
+    elif shouldremove == "n":
+        print(f"Did not remove {inventory[choice - 1]}")
+    else:
+        print("Please give a valid input. (y for yes or n for no)")
+
+    print("============================")
+
 def display_menu():
     """Display menu selection"""
     print("1. View Inventory")
@@ -91,6 +135,12 @@ def main():
             view_inventory(inventory)
         elif choice == "2":
             add_item("Headphones", "Tech", 1, inventory)
+            save_inventory(inventory, INVENTORY_FILE)
+        elif choice == "3":
+            update_quantity(inventory)
+            save_inventory(inventory, INVENTORY_FILE)
+        elif choice == "4":
+            remove_item(inventory)
             save_inventory(inventory, INVENTORY_FILE)
         elif choice == "7":
             break
