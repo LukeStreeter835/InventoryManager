@@ -54,6 +54,22 @@ def load_inventory(filename):
     #return new inventory value
     return inventory
 
+def save_inventory(inventory, filename):
+    """Save all inventory items to text file."""
+
+    with open(filename, "w") as file:
+        
+        for i in range(len(inventory)):
+            #file format: "name | category | quantity"
+            #hold a temporary dictionary to pull name, cat, and qty from
+            tempDic = inventory[i]
+            name = tempDic["Name"]
+            category = tempDic["Category"]
+            quantity = tempDic["Quantity"]
+
+            #Then write the name, cat, and qty formatted properly into the file
+            file.write(f"{name} | {category} | {quantity}\n")
+
 def display_menu():
     """Display menu selection"""
     print("1. View Inventory")
@@ -75,6 +91,7 @@ def main():
             view_inventory(inventory)
         elif choice == "2":
             add_item("Headphones", "Tech", 1, inventory)
+            save_inventory(inventory, INVENTORY_FILE)
         elif choice == "7":
             break
         else:
