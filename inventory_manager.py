@@ -4,6 +4,9 @@ Author: Luke Streeter
 Course: CPS 310
 """
 
+#Summary method uses import
+from collections import Counter
+
 #File name for where inventory will be perserved
 INVENTORY_FILE = "inventory.txt"
 
@@ -29,8 +32,7 @@ def add_item(name, category, qty, inventory):
     }
     inventory.append(tempDictionary)
 
-    print("Item succsesfully added to inventory")
-    print()
+    print("Item succsesfully added to inventory\n")
 
 def load_inventory(filename):
     """Will load inventory items from text file"""
@@ -193,22 +195,47 @@ def inventory_summary(inventory):
     """Gives overview of entire inventory"""
     total_quantity = 0
     unique_entries = []
-    unique_entries_num = 0
+    #unique_entries_num = 0
+    isUnique = True
     low_stock_items = 0
     category_qty = []
+
+    
 
     for item in inventory:
         #accumulate total quantities
         total_quantity += int(item["Quantity"])
-        #Count up number of unique items based on names
         
         #count up low stock items (if quantity < 5)
         if(int(item["Quantity"]) < 5):
             low_stock_items += 1
-        
 
+        #Count up number of unique items based on names
+        #look through a list of all uniqe names already found
+        for name in unique_entries:
+            #if name of the item is already in the list, then break out of loop
+            if(name == item["Name"]):
+                isUnique = False
+                break
+            else:
+                isUnique = True
 
+        #if item was found to be unique after loop, then add to the unique list
+        if isUnique:
+            unique_entries.append(item["Name"])
 
+    #count all the items in each category
+    category_count = Counter(item["Category"] for item in inventory)
+
+    #print the summary
+    print("Inventory Summary:")
+    print(f"Unique Items: {len(unique_entries)}")
+    print(f"Total Quantity: {total_quantity}")
+    print(f"Low-stock Items: {low_stock_items}\n")
+
+    print("Items by Category: ")
+    for category, count in category_count.items():
+        print(f"{category}: {count}")
 
 def display_menu():
     """Display menu selection"""
@@ -240,10 +267,12 @@ def main():
             save_inventory(inventory, INVENTORY_FILE)
         elif choice == "5":
             search_inventory(inventory)
+        elif choice == "6":
+            inventory_summary(inventory)
         elif choice == "7":
             break
         else:
-            print("Please enter 1 or 2")
+            print("Please enter a number 1-7")
 
 if __name__ == "__main__":
     main()
