@@ -127,23 +127,35 @@ def remove_item(inventory):
     view_inventory(inventory)
 
     #take user input to get dictionary
-    choice = int(input("Which item would you like to remove? (please select using number)\n"))
+    choice = input("Which item would you like to remove? (please select using number)\n")
     print("============================")
 
-    #display dictionary so user can verify its correct 
-    shouldremove = input(f"Would you like {inventory[choice - 1]} removed? (y/n)\n")
-    print("============================")
+    #validate input, make sure its an interger
+    if valid_int(choice):
+        choice = int(choice)
 
-    #Validate input
-    if shouldremove == "y":
-        removeditem = inventory.pop(choice - 1)
-        print(f"Successfully removed {removeditem}")
-    elif shouldremove == "n":
-        print(f"Did not remove {inventory[choice - 1]}")
+        #Make sure input is in range of list
+        if choice > 0 and choice <= len(inventory):
+            #display dictionary so user can verify its correct 
+            shouldremove = input(f"Would you like {inventory[choice - 1]} removed? (y/n)\n")
+            print("============================")
+
+            #Validate input
+            if shouldremove == "y":
+                removeditem = inventory.pop(choice - 1)
+                print(f"Successfully removed {removeditem}")
+            elif shouldremove == "n":
+                print(f"Did not remove {inventory[choice - 1]}")
+            else:
+                print("Please give a valid input. (y for yes or n for no)")
+
+            print("============================")
+
+        else:
+            print("Input was out of range of list")
+
     else:
-        print("Please give a valid input. (y for yes or n for no)")
-
-    print("============================")
+        print("Input was invalid, please enter a number")
 
 def search_inventory(inventory):
     """look through a given list of dictionaries and find matching names"""
