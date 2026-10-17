@@ -10,6 +10,13 @@ from collections import Counter
 #File name for where inventory will be perserved
 INVENTORY_FILE = "inventory.txt"
 
+def valid_int(str):
+    """Takes a string and checks to see if its an interger"""
+    try:
+        int(str)
+        return True
+    except(ValueError, TypeError):
+        return False
 
 def view_inventory(inventory):
     """Shows whole list of dictionaries in console"""
@@ -20,19 +27,49 @@ def view_inventory(inventory):
 
     print("============================")
 
-def add_item(name, category, qty, inventory):
+def get_add_item():
+    """Will get name, cat, and qty from user input"""
+    #get user input
+    name = input("What is the name of the item you would like to add?\n")
+    category = input("What is the category of the item you would like to add?\n")
+    qty = input("What is the quantity of the item you would like to add?\n")
+
+    #if theres a | in the name or category, then make it an empty string
+    if "|" in name:
+        name = ""
+    if "|" in category:
+        category = ""
+
+    #if qty is not a number, then deafault to -1
+    if valid_int(qty) == False:
+        qty = -1
+    else:
+        qty = int(qty)
+
+    return name, category, qty
+    
+
+def add_item(inventory):
     """Will add a new item into the list of dictionaries"""
 
-    #add new key values to dictionary
     #TODO: change add method to have input verification (especially for qty)
-    tempDictionary = {
-        "Name": name,
-        "Category": category,
-        "Quantity": qty
-    }
-    inventory.append(tempDictionary)
+    #get user input for name, category, and qty
+    name, category, qty = get_add_item()
+    #make sure inputs are valid
+    if name != "" and category != "" and qty >= 0:
 
-    print("Item succsesfully added to inventory\n")
+        #add new key values to dictionary
+        tempDictionary = {
+            "Name": name,
+            "Category": category,
+            "Quantity": qty
+        }
+        inventory.append(tempDictionary)
+
+        print("Item succsesfully added to inventory\n")
+
+    else:
+        print("Unable to add item due to one or more invalid inputs")
 
 def load_inventory(filename):
     """Will load inventory items from text file"""
@@ -78,14 +115,6 @@ def save_inventory(inventory, filename):
 
             #Then write the name, cat, and qty formatted properly into the file
             file.write(f"{name} | {category} | {quantity}\n")
-
-def valid_int(str):
-    """Takes a string and checks to see if its an interger"""
-    try:
-        int(str)
-        return True
-    except(ValueError, TypeError):
-        return False
 
 def update_quantity(inventory):
     """Allows the ability to change quantities of a certain item in the list of dictionaries"""
@@ -257,7 +286,7 @@ def main():
         if choice == "1":
             view_inventory(inventory)
         elif choice == "2":
-            add_item("Headphones", "Tech", 1, inventory)
+            add_item(inventory)
             save_inventory(inventory, INVENTORY_FILE)
         elif choice == "3":
             update_quantity(inventory)
