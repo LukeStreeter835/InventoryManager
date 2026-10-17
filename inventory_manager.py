@@ -9,6 +9,7 @@ INVENTORY_FILE = "inventory.txt"
 
 
 def view_inventory(inventory):
+    """Shows whole list of dictionaries in console"""
     i = 1
     for x in inventory:
         print(f"{i}. {x}")
@@ -20,6 +21,7 @@ def add_item(name, category, qty, inventory):
     """Will add a new item into the list of dictionaries"""
 
     #add new key values to dictionary
+    #TODO: change add method to have input verification (especially for qty)
     tempDictionary = {
         "Name": name,
         "Category": category,
@@ -31,7 +33,7 @@ def add_item(name, category, qty, inventory):
     print()
 
 def load_inventory(filename):
-    """Will load inventory items from inventory.txt"""
+    """Will load inventory items from text file"""
     inventory = []
 
     try:
@@ -45,6 +47,8 @@ def load_inventory(filename):
                 name = name.strip()
                 category = category.strip()
                 qty = qty.strip()
+                #convert qty to an interger
+                qty = int(qty)
 
                 #if one of the key's values are empty, then dont add it into list
                 if(name != "" and category != "" and qty != ""):
@@ -73,25 +77,52 @@ def save_inventory(inventory, filename):
             #Then write the name, cat, and qty formatted properly into the file
             file.write(f"{name} | {category} | {quantity}\n")
 
+def valid_int(str):
+    """Takes a string and checks to see if its an interger"""
+    try:
+        int(str)
+        return True
+    except(ValueError, TypeError):
+        return False
+
 def update_quantity(inventory):
+    """Allows the ability to change quantities of a certain item in the list of dictionaries"""
     #display inventory so user can see selection
     view_inventory(inventory)
 
     #take user input to select the right dictionary
-    choice = int(input("What inventory item do you want? (please select using number)\n"))
+    choice = input("What inventory item do you want? (please select using number)\n")
     print("============================")
 
-    #display dictionary so veiwer can verify its correct 
-    print(inventory[choice - 1])
-    print("============================")
+    #make sure input was actually an int
+    if valid_int(choice):
+        choice = int(choice)
 
-    #ask user to change qty
-    qtychange = input("What would you like the new qunatity to be?\n")
+        #make sure number is also in range of list size
+        if choice > 0 and choice <= len(inventory):
+            #display dictionary so veiwer can verify its correct 
+            print(inventory[choice - 1])
+            print("============================")
 
-    #change qty
-    inventory[choice - 1]["Quantity"] = qtychange
+            #ask user to change qty
+            qtychange = input("What would you like the new qunatity to be?\n")
+
+            #make sure input a int and that said int is non-negative
+            if valid_int(qtychange) and int(qtychange) >= 0:
+                #change qty
+                inventory[choice - 1]["Quantity"] = int(qtychange)
+            else:
+                print("input was not valid, please enter a non-negative number")
+
+        else:
+            print(f"Input was out of range, please insert a number from 1 to {len(inventory)}")
+
+    else:
+        print("input was not valid, please enter a number")
+
 
 def remove_item(inventory):
+    """Rmove an item from list based on index position"""
     #display list so user can see selection
     view_inventory(inventory)
 
@@ -115,6 +146,7 @@ def remove_item(inventory):
     print("============================")
 
 def search_inventory(inventory):
+    """look through a given list of dictionaries and find matching names"""
     #get user input
     finditem = input("Enter item name you wish to search for: \n")
     print("============================")
@@ -144,6 +176,26 @@ def search_inventory(inventory):
         print("No matches were found, sorry!")
 
     print("============================")
+
+def inventory_summary(inventory):
+    """Gives overview of entire inventory"""
+    total_quantity = 0
+    unique_entries = []
+    unique_entries_num = 0
+    low_stock_items = 0
+    category_qty = []
+
+    for item in inventory:
+        #accumulate total quantities
+        total_quantity += int(item["Quantity"])
+        #Count up number of unique items based on names
+        
+        #count up low stock items (if quantity < 5)
+        if(int(item["Quantity"]) < 5):
+            low_stock_items += 1
+        
+
+
 
 
 def display_menu():
