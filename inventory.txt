@@ -1,0 +1,2 @@
+puh | dih | 3
+dih | puh | 6
